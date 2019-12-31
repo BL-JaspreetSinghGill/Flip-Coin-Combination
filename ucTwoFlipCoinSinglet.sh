@@ -14,18 +14,17 @@ getFlipCoinResult () {
 
 	if [ $result -eq 1 ]
 	then
-		echo "HEAD";
-		storeSingletInDictionary "H";
+		echo "H";
 	else
-		echo "TAIL";
-		storeSingletInDictionary "T";
+		echo "T";
 	fi;
 }
 
-storeSingletInDictionary () {
-	key=$1;
+storeInDictionary () {
+	local -n dictionary=$1;
+	key=$2;
 
-	singletDictionary[$key]=$((${singletDictionary[$key]}+1));
+	dictionary[$key]=$((${dictionary[$key]}+1));
 }
 
 displayDictionaryResult () {
@@ -46,15 +45,20 @@ getPercentage () {
 	done;
 }
 
-flipCoinMain () {
+singletResult () {
 	while [ $counter -lt $LIMIT ]
 	do
-		getFlipCoinResult;
+		value=$(getFlipCoinResult);
+		storeInDictionary singletDictionary $value;
 		(( counter++ ));
 	done;
 
 	displayDictionaryResult singletDictionary "SINGLET";
 	getPercentage singletDictionary;
+}
+
+flipCoinMain () {
+	singletResult;
 }
 
 flipCoinMain;
